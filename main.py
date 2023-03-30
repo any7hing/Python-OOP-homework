@@ -5,14 +5,13 @@ class Student:
         self.gender = gender
         self.finished_courses = []
         self.courses_in_progress = []
-        self.grades = {}
-        self.rate = [].append(name)
-    
+        self.grades = {} 
+
     def __str__ (self):
         res = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за домашние задания: {self.count_grades(self.grades)}\nКурсы в процессе изучения: {" ".join(self.courses_in_progress)}\nЗавершенные курсы: {" ".join(self.finished_courses)}'
         return res
     
-    def rate_hw(self, lecturer, course, grade):
+    def rate_hw(self, lecturer, course, grade): # функция ставит оценки лекторам за предмет
         if isinstance(lecturer, Lecturer) and course in self.courses_in_progress:
             if course in lecturer.L_grades:
                 lecturer.L_grades[course] += [grade]
@@ -21,14 +20,14 @@ class Student:
         else:
             return 'Ошибка'
         
-    def count_grades(self,grades):
+    def count_grades(self,grades): # считаем среднию оценку за предмет
         result = 0
         for course,grade in grades.items():
             result += sum(grade)/len(grade)
         result = result/len(grades)
         return result
     
-    def __lt__(self,other):
+    def __lt__(self,other): # запиливаем сравнение по классам
         if not isinstance(other,Student):
             print('Нельзя сравнивать разные классы')
             return
@@ -42,29 +41,27 @@ class Mentor:
 
 class Lecturer(Mentor):
     def __init__(self,name,surname):
-        self.name = name
-        self.surname = surname
+        super().__init__(name,surname)
         self.L_grades = {}
-        self.courses_attached = []
 
-    def count_grades(self,L_grades):
+    def count_grades(self,L_grades): #Считаем среднию оценку у лекторов за предмет
         res = 0
         for courses,list_grades in L_grades.items():
             res += sum(list_grades)/len(list_grades)
         return (res/len(L_grades))
     
-    def __str__(self):
+    def __str__(self): # пилим вывод для print
         res = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.count_grades(self.L_grades)}'
         return res
 
-    def __lt__(self,other):
+    def __lt__(self,other): # запиливаем сравнение по классам
         if not isinstance(other,Lecturer):
             print('Нельзя сравнивать разные классы')
             return
         return self.count_grades(self.L_grades) < other.count_grades(other.L_grades)
 
 class Reviever(Mentor):
-    def rate_hw(self, student, course, grade):
+    def rate_hw(self, student, course, grade): # функция ставит оценки студентам за предмет
         if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
             if course in student.grades:
                 student.grades[course] += [grade]
@@ -85,7 +82,7 @@ Lich = Lecturer('Lich','King')
 Sindragosa = Lecturer('Sindragosa', 'Dragon')
 
 # Операции с классами, Заполняем данные
-Arthas.courses_in_progress += ['Python']
+Arthas.courses_in_progress += ['Python'] #
 Arthas.finished_courses += ['Git']
 Terenas.courses_in_progress += ['Python']
 Terenas.finished_courses += ['Java']
@@ -102,7 +99,7 @@ Sylvanas.rate_hw(Terenas,"Python", 4)
 # Сравниваем и выводим студентов
 # print(Arthas)
 # print(Terenas)
-# print(Arthas < Terenas)
+# print(Arthas < Terenas) # Сравниваем студентов по средним оценкам за дз
 
 #Студенты оценивают Лекторов
 Arthas.rate_hw(Lich,'Python', 7)
@@ -113,6 +110,7 @@ Terenas.rate_hw(Sindragosa,'Python', 10)
 # print(Lich)
 # print(Sindragosa)
 # print(Lich<Sindragosa)
+
 
 # Создаем и заполняем списки студентов и лекторов для 4 задания. Т.К. В лекции не обьясняли как ложить в список экземпляры при инициализации.
 student_list = []
